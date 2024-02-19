@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: JUAN
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3306:3306"
+
+  php-apache:
+    image: php:7.4-apache
+    volumes:
+      - /Users/caligula/Desktop/projects/Ex2:/var/www/html
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    command: >
+      sh -c 'docker-php-ext-install mysqli 
+      && apache2-foreground'
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:

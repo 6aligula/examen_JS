@@ -1,0 +1,19 @@
+#logo,#mainTitle {
+    background-color: rgb(240, 240, 240);
+    align-content: left;
+}
+
+#mainTitle>h1 {
+    font-size: 72px;
+    text-align: left;
+}
+
+#playlists>ul>li {
+    background-color: rgb(234, 251, 242);
+}
+
+#footer {
+    background-color: rgb(218, 255, 235);
+    margin-top: 1cm;
+}
+

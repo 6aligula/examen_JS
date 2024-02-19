@@ -1,0 +1,57 @@
+
+******************************************************************************************************************
+
+CONTENEDOR PARA LISTA DE CANCIONES EN VISTA TARJETAS
+
+<div class="row row-cols-md-5">
+  <!-- LISTADO DE CANCIONES TARJETA -->
+</div>
+
+
+TARJETA DE CANCIÓN
+
+<div class="card text-center bg-light mb-2 mr-2">
+  <div class="card-body">
+      <h5 class="card-title">"<!-- TITULO -->"</h5>
+      <span><!-- ARTISTA --></span>
+      <p class="card-text"><!-- DURACION --></p>
+      <button type="button" class="btn btn-outline-info">Add to playlist</button>
+  </div>
+</div>
+
+
+******************************************************************************************************************
+
+CONTENEDOR PARA LISTA DE CANCIONES EN VISTA FILAS
+
+<ul class="list-group">
+  <!-- LISTADO DE CANCIONES FILA -->
+</ul>
+
+
+FILA DE CANCIÓN
+
+<li class="list-group-item">
+  <div class="row row-cols-md-4">
+    <div>
+        <h5>"<!-- TITULO -->"</h5>
+    </div>
+    <div><!-- ARTISTA --></div>
+    <div><!-- DURACION --></div>
+    <div>
+      <button type="button" class="btn btn-outline-info">Add to playlist</button>
+    </div>
+  </div>
+</li>
+
+******************************************************************************************************************
+
+PLAYLIST INDIVIDUAL (EL CONTENEDOR DE PLAYLISTS YA ESTÁ EN EL HTML)
+
+<li class="list-group-item">
+  <h5>Playlist: <!-- Nombre de lista --></h5>
+  <h6>Author: <!-- Autor de la lista --></h6>
+  <h6>Songs: <!-- lista de IDs de canciones separadas por coma --></h6>
+</li>
+
+******************************************************************************************************************
