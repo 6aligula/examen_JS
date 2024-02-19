@@ -16,7 +16,7 @@ services:
   php-apache:
     image: php:7.4-apache
     volumes:
-      - /Users/caligula/Desktop/projects/Ex2:/var/www/html
+      - .:/var/www/html
     ports:
       - "8080:80"
     depends_on:

@@ -9,27 +9,52 @@ let currentPlaylistId = 4; // Asumiendo que la última lista es la que tiene id 
 document.addEventListener('DOMContentLoaded', function() {
   loadSongs();
   loadPlaylists();
+  //para rascar el 0.75
+  loadUserPlaylist();
   calculateStatistics();
+
+  // llamar a esta función al cargar la página
+  initViewType(); 
 });
+
 
 // Funciones para cargar datos desde la API
 function loadSongs() {
   fetch('https://my-json-server.typicode.com/luismiguel-fernandez/examen/songs')
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(data => {
       songs = data;
       renderSongsAsCards();
+      initViewType(); // Asegúrate de inicializar la vista después de cargar las canciones
+    })
+    .catch(error => {
+      console.error('Error fetching songs:', error);
     });
 }
 
 function loadPlaylists() {
   fetch('https://my-json-server.typicode.com/luismiguel-fernandez/examen/playlists')
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(data => {
       playlists = data;
       renderPlaylists();
+      loadUserPlaylist(); // Asegúrate de cargar la playlist del usuario después de cargar las playlists
+    })
+    .catch(error => {
+      console.error('Error fetching playlists:', error);
     });
 }
+
 
 // Funciones para renderizar las canciones y las playlists
 function renderSongsAsCards() {
@@ -38,10 +63,10 @@ function renderSongsAsCards() {
   songs.forEach(song => {
       const songCard = `
           <div class="col-md-2 card" style="width: 18rem;">
-              <img src="${song.cover}" class="card-img-top" alt="${song.title}">
               <div class="card-body">
                   <h5 class="card-title">${song.title}</h5>
                   <p class="card-text">${song.artist}</p>
+                  <p class="card-text">${song.length}</p>
                   <button onclick="addToPlaylist(${song.id})" class="btn btn-primary">Add to Playlist</button>
               </div>
           </div>`;
@@ -85,16 +110,19 @@ function renderPlaylists() {
 }
 
 
-// Función para añadir canciones a la playlist
+// Función para añadir canciones a la playlist con localStorage
 function addToPlaylist(songId) {
   const playlist = playlists.find(p => p.id === currentPlaylistId);
   if (!playlist.songs.includes(songId)) {
       playlist.songs.push(songId);
       alert("Song added to the playlist!");
+      // Guardar la playlist actualizada en LocalStorage
+      localStorage.setItem('userPlaylist', JSON.stringify(playlist.songs));
   } else {
       alert("This song is already in the playlist.");
   }
 }
+
 
 
 // Función para la búsqueda
@@ -115,8 +143,8 @@ function calculateStatistics() {
   document.getElementById('stat3').innerText = (songs.length / playlists.length).toFixed(2);
   // Asumiendo que tienes funciones o lógica para calcular los demás
   // Ejemplo:
-  // document.getElementById('stat4').innerText = calculateNumberOfArtists();
-  // document.getElementById('stat5').innerText = topSongByLength();
+  //document.getElementById('stat4').innerText = calculateNumberOfArtists();
+  //document.getElementById('stat5').innerText = topSongByLength();
 }
 
 
@@ -133,3 +161,41 @@ document.querySelector('#viewSwitch input').addEventListener('change', function(
       renderSongsAsRows(); // Necesitas implementar esta función según tus requisitos
   }
 });
+
+//modificar la función loadUserPlaylist para que cargue la playlist del usuario desde el LocalStorage
+function loadUserPlaylist() {
+  const storedPlaylist = localStorage.getItem('userPlaylist');
+  if (storedPlaylist) {
+      const playlistSongs = JSON.parse(storedPlaylist);
+      // Encuentra la playlist y verifica que existe antes de asignarle las canciones
+      const playlist = playlists.find(p => p.id === currentPlaylistId);
+      if (playlist) {
+          playlist.songs = playlistSongs;
+      }
+  }
+}
+
+//Cada vez que el usuario cambie el tipo de vista, guardo esta preferencia en el LocalStorage:
+document.querySelector('#viewSwitch input').addEventListener('change', function() {
+  if (this.checked) {
+      renderSongsAsCards();
+      localStorage.setItem('viewType', 'cards');
+  } else {
+      renderSongsAsRows();
+      localStorage.setItem('viewType', 'rows');
+  }
+});
+//Cargar el Tipo de Vista al Iniciar la Aplicación
+function initViewType() {
+  const viewType = localStorage.getItem('viewType');
+  const viewSwitch = document.querySelector('#viewSwitch input');
+  if (viewType === 'rows') {
+      viewSwitch.checked = false;
+      renderSongsAsRows();
+  } else {
+      // Por defecto o si está guardado como 'cards'
+      viewSwitch.checked = true;
+      renderSongsAsCards();
+  }
+}
+
